@@ -1,0 +1,72 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BemfaCloud", "BemfaCloud\BemfaCloud.csproj", "{00AAE23E-4D77-4BCD-B538-0B14BE35A108}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E5B4E825-6067-4A5B-83DD-2C0267CD09D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{6B8595B1-A515-4A4C-A11F-FA6C47D50B55}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BemfaCloud.Example.Mqtt", "Examples\BemfaCloud.Example.Mqtt\BemfaCloud.Example.Mqtt.csproj", "{392820C1-9400-431B-B8A2-0F8666BD874E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BemfaCloud.Example.Tcp", "Examples\BemfaCloud.Example.Tcp\BemfaCloud.Example.Tcp.csproj", "{BA3F32A9-F5B9-48D5-A9C7-7AC1AAF78314}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BemfaCloudTests.Concole", "Tests\BemfaCloudTests.Concole\BemfaCloudTests.Concole.csproj", "{85F28B26-F858-469A-91E6-7F5708910B75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BemfaCloud.Devices", "BemfaCloud.Devices\BemfaCloud.Devices.csproj", "{086385A1-C331-4769-97C5-7379DE2E7B4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BemfaCloud.Example.RaspberryPi", "Examples\BemfaCloud.Example.RaspberryPi\BemfaCloud.Example.RaspberryPi.csproj", "{9AA993AB-5398-4944-9C77-A3BDAB91D8C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BemfaCloud.Example.Devices", "Examples\BemfaCloud.Example.Devices\BemfaCloud.Example.Devices.csproj", "{EFC9E22B-882B-4280-BFCF-8F92EC5EB685}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{00AAE23E-4D77-4BCD-B538-0B14BE35A108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00AAE23E-4D77-4BCD-B538-0B14BE35A108}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00AAE23E-4D77-4BCD-B538-0B14BE35A108}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00AAE23E-4D77-4BCD-B538-0B14BE35A108}.Release|Any CPU.Build.0 = Release|Any CPU
+		{392820C1-9400-431B-B8A2-0F8666BD874E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{392820C1-9400-431B-B8A2-0F8666BD874E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{392820C1-9400-431B-B8A2-0F8666BD874E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{392820C1-9400-431B-B8A2-0F8666BD874E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA3F32A9-F5B9-48D5-A9C7-7AC1AAF78314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA3F32A9-F5B9-48D5-A9C7-7AC1AAF78314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA3F32A9-F5B9-48D5-A9C7-7AC1AAF78314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA3F32A9-F5B9-48D5-A9C7-7AC1AAF78314}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85F28B26-F858-469A-91E6-7F5708910B75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85F28B26-F858-469A-91E6-7F5708910B75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85F28B26-F858-469A-91E6-7F5708910B75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85F28B26-F858-469A-91E6-7F5708910B75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{086385A1-C331-4769-97C5-7379DE2E7B4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{086385A1-C331-4769-97C5-7379DE2E7B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{086385A1-C331-4769-97C5-7379DE2E7B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{086385A1-C331-4769-97C5-7379DE2E7B4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AA993AB-5398-4944-9C77-A3BDAB91D8C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AA993AB-5398-4944-9C77-A3BDAB91D8C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AA993AB-5398-4944-9C77-A3BDAB91D8C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AA993AB-5398-4944-9C77-A3BDAB91D8C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFC9E22B-882B-4280-BFCF-8F92EC5EB685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFC9E22B-882B-4280-BFCF-8F92EC5EB685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFC9E22B-882B-4280-BFCF-8F92EC5EB685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFC9E22B-882B-4280-BFCF-8F92EC5EB685}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{392820C1-9400-431B-B8A2-0F8666BD874E} = {6B8595B1-A515-4A4C-A11F-FA6C47D50B55}
+		{BA3F32A9-F5B9-48D5-A9C7-7AC1AAF78314} = {6B8595B1-A515-4A4C-A11F-FA6C47D50B55}
+		{85F28B26-F858-469A-91E6-7F5708910B75} = {E5B4E825-6067-4A5B-83DD-2C0267CD09D3}
+		{9AA993AB-5398-4944-9C77-A3BDAB91D8C7} = {6B8595B1-A515-4A4C-A11F-FA6C47D50B55}
+		{EFC9E22B-882B-4280-BFCF-8F92EC5EB685} = {6B8595B1-A515-4A4C-A11F-FA6C47D50B55}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {55F59598-D6E5-4C1B-BCD2-A7CC98B573D8}
+	EndGlobalSection
+EndGlobal

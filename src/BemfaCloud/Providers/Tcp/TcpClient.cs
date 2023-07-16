@@ -1,0 +1,102 @@
+﻿using BemfaCloud.Providers.Tcp.Abstractions.Components;
+using BemfaCloud.Providers.Tcp.Abstractions.Connections;
+using BemfaCloud.Providers.Tcp.Abstractions.Events;
+using BemfaCloud.Providers.Tcp.Extensions;
+using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+
+namespace BemfaCloud.Providers.Tcp
+{
+    internal sealed class TcpClient : NetBase<ITcpConnection, NetClientEventArgs<ITcpConnection>>, ITcpClient, IDisposable
+    {
+        public override bool Running => Connection?.Listener?.Running == true;
+
+        private TcpConnection connection { get; set; }
+        public ITcpConnection Connection => connection;
+        public bool Connected => connection?.Connected == true;
+
+        public override string Key => Connection.Key;
+
+        public override string Name => Connection.Name;
+
+        public override int Id => Connection.Id;
+
+        public SocketEventHandler<TryConnectingEventArgs<ITcpConnection>> OnTryConnecting { get; set; }
+
+        public TcpClient(TcpClientOptions options) => OnConstructing(options);
+
+        public TcpClient(string remoteHost, int remotePort, int localPort = 0, string localHost = null, int connectTimeout = -1, string name = null, int id = 0)
+        {
+            try
+            {
+                TcpClientOptions options = new TcpClientOptions { Id = id, Name = name };
+                if (connectTimeout > 0) options.ConnectTimeout = connectTimeout;
+                options.TryConnectionStrategy = new DefaultTryConnectionStrategy();
+                options.RemoteEndPoint = new IPEndPoint(IPAddress.Parse(remoteHost), remotePort);
+                options.LocalEndPoint = localHost.IsNullOrWhiteSpace() && localPort < 1 ? null : new IPEndPoint(options.RemoteEndPoint.AddressFamily == AddressFamily.InterNetworkV6 ? IPAddress.IPv6Any : IPAddress.Any, localPort);
+
+                OnConstructing(options);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private void OnConstructing(TcpClientOptions options)
+        {
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (options.RemoteEndPoint == null) throw new ArgumentNullException(nameof(options.RemoteEndPoint));
+
+            connection = new TcpConnection(options.RemoteEndPoint, options.LocalEndPoint) { OnConnected = OnConnectedHandler, OnReceived = OnReceivedHandler, OnDisconnected = OnDisconnectedHandler, OnStarted = OnStartedHandler, OnStopped = OnStoppedHandler, OnException = OnExceptionHandler, ConnectTimeout = options.ConnectTimeout, OnTryConnecting = OnTryConnectingHandler, ReconnectEnable = options.ReconnectEnable, TryConnectionStrategy = options.TryConnectionStrategy };
+
+            connection.KeepAlive(KeepAliveOption.KeepAlive, KeepAliveOption.Interval, KeepAliveOption.Span);
+
+            if (options.Id > 0) connection.Id = options.Id;
+            if (!options.Name.IsNullOrWhiteSpace()) connection.Name = options.Name;
+
+            if (options.OnConnected != null) OnConnected = options.OnConnected;
+            if (options.OnReceived != null) OnReceived = options.OnReceived;
+            if (options.OnDisconnected != null) OnDisconnected = options.OnDisconnected;
+            if (options.OnStarted != null) OnStarted = options.OnStarted;
+            if (options.OnStopped != null) OnStopped = options.OnStopped;
+            if (options.OnException != null) OnException = options.OnException;
+            if (options.OnTryConnecting != null) OnTryConnecting = options.OnTryConnecting;
+        }
+
+        public void ReconnectAvailable(bool v) => connection.ReconnectEnable = v;
+
+        public void UseTryConnectionStrategy(ITryConnectionStrategy strategy) => connection.TryConnectionStrategy = strategy;
+
+        public override void Start()
+        {
+            Connection?.Start();
+        }
+
+        public override void Stop()
+        {
+            Connection?.Stop();
+        }
+
+        protected override void OnDisconnectedHandler(NetClientEventArgs<ITcpConnection> args)
+        {
+            base.OnDisconnectedHandler(args);
+            if (connection?.ReconnectEnable == true)
+            {
+                ThreadPool.QueueUserWorkItem((o) => { connection.Reconnect(); });
+            }
+        }
+
+        public override void UseKeepAlive(bool keepAlive = true, int interval = 5000, int span = 1000)
+        {
+            base.UseKeepAlive(keepAlive, interval, span);
+            connection.KeepAlive(KeepAliveOption.KeepAlive, KeepAliveOption.Interval, KeepAliveOption.Span);
+        }
+
+        private void OnTryConnectingHandler(TryConnectingEventArgs<ITcpConnection> args) => OnTryConnecting?.Invoke(args);
+
+        public override void Dispose() => Connection?.Dispose();
+    }
+}

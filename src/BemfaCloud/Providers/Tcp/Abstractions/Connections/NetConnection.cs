@@ -1,0 +1,50 @@
+﻿using System;
+using System.Net;
+using System.Net.Sockets;
+using BemfaCloud.Providers.Tcp.Abstractions;
+using BemfaCloud.Providers.Tcp.Abstractions.Events;
+
+namespace BemfaCloud.Providers.Tcp.Abstractions.Connections
+{
+    public abstract class NetConnection<TConnection, TEventArgs> : IEvent<TConnection, TEventArgs>, IDisposable
+        where TConnection : INetConnection
+        where TEventArgs : NetEventArgs
+    {
+        internal protected KeepAliveOptions KeepAliveOption { get; set; }
+
+        public virtual int Id { get; internal set; }
+
+        public virtual string Name { get; internal set; }
+
+        public virtual string Key { get; internal set; }
+
+        public virtual Socket Instance { get; protected set; }
+
+        public virtual IPEndPoint LocalEndPoint { get; protected set; }
+
+        public virtual IPEndPoint RemoteEndPoint { get; protected set; }
+
+        public virtual SocketEventHandler<NetClientEventArgs<TConnection>> OnConnected { get; internal set; }
+
+        public virtual SocketEventHandler<NetClientReceivedEventArgs<TConnection>> OnReceived { get; internal set; }
+
+        public virtual SocketEventHandler<NetClientEventArgs<TConnection>> OnDisconnected { get; internal set; }
+
+        public virtual SocketEventHandler<TEventArgs> OnStarted { get; internal set; }
+
+        public virtual SocketEventHandler<TEventArgs> OnStopped { get; internal set; }
+
+        public virtual SocketEventHandler<NetClientEventArgs<TConnection>> OnException { get; internal set; }
+
+        public abstract void Start();
+
+        public abstract void Stop();
+
+        public abstract void Dispose();
+
+        internal protected virtual void KeepAlive(bool keepAlive = true, int interval = 5000, int span = 1000)
+        {
+            KeepAliveOption = new KeepAliveOptions(keepAlive, interval, span);
+        }
+    }
+}
