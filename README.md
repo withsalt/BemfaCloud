@@ -39,7 +39,7 @@ dotnet add package BemfaCloud.Devices
 ```
 
 ### 使用一个开关设备
-控制一个开关关设备`testSwitchMqtt001`的完整示例。  
+控制一个开关关设备`testSwitchMqtt001`的`TCP`接入完整示例。  
 ```csharp
 using System;
 using System.Threading.Tasks;
@@ -58,7 +58,7 @@ namespace ConsoleApp7
             using IBemfaConnector connector = new BemfaConnectorBuilder()
                 .WithTcp()
                 .WithSecret("在此处填写你的私钥")
-                .WithTopics("testSwitchMqtt001")  //可订阅多个
+                .WithTopics("testSwitch001")  //可订阅多个
                 .WithErrorHandler((e) =>
                 {
                     Console.WriteLine($"[LOG][{DateTime.Now}] {e.Message}");
@@ -80,7 +80,7 @@ namespace ConsoleApp7
             }
 
             //使用开关设备
-            BemfaSwitch @switch = new BemfaSwitch("testSwitchMqtt001", connector);
+            BemfaSwitch @switch = new BemfaSwitch("testSwitch001", connector);
             @switch.On += (e) =>
             {
                 //执行开关打开动作
