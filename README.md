@@ -1,5 +1,5 @@
 # BemfaCloud
-巴法云 C#/.NET SDK。支持TCP和MQTT协议接入，并有简单实用的设备操作API。跨平台，支持Linux、Windows、OSX，支持树莓派。  
+巴法云 C#/.NET SDK。支持TCP和MQTT协议接入，并提供超级简单的设备操作API。跨平台，支持Linux、Windows、OSX，支持树莓派。  
 
 ## 特别感谢
 巴法云：https://cloud.bemfa.com/  
