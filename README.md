@@ -16,7 +16,7 @@ GodSharp.Socket: https://github.com/godsharp/GodSharp.Socket
 ## 快速开始
 ### 新建主题
 登录到巴法云之后，点击新建主题。  
-![](https://docs.geeiot.net/server/index.php?s=/api/attachment/visitFile&sign=5be00ae3d98968bdb03414afda7dffaf)
+![](https://github.com/withsalt/BemfaCloud/blob/main/docs/images/001.png?raw=true)
 Tips：  
 巴发云通过**主题名称后三位**判断主题类型  
 - 001: 插座设备;  
