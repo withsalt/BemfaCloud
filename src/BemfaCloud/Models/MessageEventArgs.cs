@@ -11,12 +11,12 @@ namespace BemfaCloud.Models
 
         internal MessageEventArgs(CommandType commandType, DeviceInfo deviceInfo, ArraySegment<byte> data)
         {
-            this.CommandType = commandType;
+            this.Type = commandType;
             this.DeviceInfo = deviceInfo;
             this.Data = data;
         }
 
-        public CommandType CommandType { get; internal set; }
+        public CommandType Type { get; internal set; }
 
         public DeviceInfo DeviceInfo { get; internal set; }
 

@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Drawing;
 using BemfaCloud.Devices.Extensions;
 using BemfaCloud.Devices.Models;
 using BemfaCloud.Models;
 
 namespace BemfaCloud.Devices
 {
-    public class BemfaCurtain : BaseBemfaDevice
+    public class BemfaCurtain : BaseDevice
     {
         public override DeviceType DeviceType => DeviceType.Curtain;
 
         public event Func<MessageEventArgs, int, bool> On;
         public event Func<MessageEventArgs, bool> Off;
         public event Func<MessageEventArgs, bool> Pause;
+        public event Action<Exception> OnException;
 
         private int _lastPercentage = 0;
 
@@ -58,14 +58,11 @@ namespace BemfaCloud.Devices
             {
                 percentage = status == DeviceStatus.On ? 100 : 0;
             }
+
             if (status == DeviceStatus.On)
-            {
                 DeviceOn(message, percentage);
-            }
             else
-            {
                 DeviceOff(message);
-            }
             return true;
         }
 
@@ -75,14 +72,21 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOn(MessageEventArgs message, int percentage)
         {
-            bool? result = On?.Invoke(message, percentage);
-            if (result == null) return;
-            if (result == true)
+            try
             {
-                this._lastPercentage = percentage;
-                this.DeviceStatus = DeviceStatus.On;
+                bool? result = On?.Invoke(message, percentage);
+                if (result == null) return;
+                if (result == true)
+                {
+                    this._lastPercentage = percentage;
+                    this.DeviceStatus = DeviceStatus.On;
+                }
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastPercentage.ToString()));
             }
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastPercentage.ToString()));
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
 
         /// <summary>
@@ -91,14 +95,21 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOff(MessageEventArgs message)
         {
-            bool? result = Off?.Invoke(message);
-            if (result == null) return;
-            if (result == true)
+            try
             {
-                _lastPercentage = 0;
-                this.DeviceStatus = DeviceStatus.Off;
+                bool? result = Off?.Invoke(message);
+                if (result == null) return;
+                if (result == true)
+                {
+                    _lastPercentage = 0;
+                    this.DeviceStatus = DeviceStatus.Off;
+                }
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription()));
             }
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription()));
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
 
         /// <summary>

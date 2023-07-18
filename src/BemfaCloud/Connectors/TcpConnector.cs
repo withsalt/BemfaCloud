@@ -336,10 +336,6 @@ namespace BemfaCloud.Connectors
                         {
                             deviceInfo = new DeviceInfo(topicVal);
                         }
-                        if (commandType == CommandType.Publish || commandType == CommandType.SubAndPull || commandType == CommandType.TestamentMsg)
-                        {
-                            Listener?.Invoke(new MessageEventArgs(commandType, deviceInfo, Encoding.UTF8.GetBytes(msgVal)));
-                        }
                         OnMessage?.Invoke(new MessageEventArgs(commandType, deviceInfo, Encoding.UTF8.GetBytes(msgVal)));
                         break;
                     default:

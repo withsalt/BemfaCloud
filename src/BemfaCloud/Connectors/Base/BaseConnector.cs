@@ -11,7 +11,6 @@ namespace BemfaCloud.Connectors.Base
     {
         protected BaseConnectorBuilder Builder { get; private set; }
 
-        protected Action<MessageEventArgs> Listener;
         protected abstract event Action<ErrorEventArgs> OnError;
         protected abstract event Action<MessageEventArgs> OnMessage;
 
@@ -34,7 +33,8 @@ namespace BemfaCloud.Connectors.Base
 
         public virtual void RegistListener(Action<MessageEventArgs> action)
         {
-            if (action != null) this.Listener = action;
+            if (action != null) 
+                this.OnMessage += action;
         }
     }
 }

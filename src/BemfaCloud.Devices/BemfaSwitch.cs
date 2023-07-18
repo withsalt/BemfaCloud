@@ -7,12 +7,13 @@ namespace BemfaCloud.Devices
     /// <summary>
     /// 开关设备
     /// </summary>
-    public class BemfaSwitch : BaseBemfaDevice
+    public class BemfaSwitch : BaseDevice
     {
         public override DeviceType DeviceType => DeviceType.Switch;
 
         public event Func<MessageEventArgs, bool> On;
         public event Func<MessageEventArgs, bool> Off;
+        public event Action<Exception> OnException;
 
         public BemfaSwitch(string topic, IBemfaConnector connector) : base(topic, connector)
         {
@@ -42,11 +43,18 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOn(MessageEventArgs message)
         {
-            bool? result = On?.Invoke(message);
-            if (result == null) return;
-            if (result == true) this.DeviceStatus = Models.DeviceStatus.On;
+            try
+            {
+                bool? result = On?.Invoke(message);
+                if (result == null) return;
+                if (result == true) this.DeviceStatus = Models.DeviceStatus.On;
 
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, this.DeviceStatus.GetDescription());
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, this.DeviceStatus.GetDescription());
+            }
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
 
         /// <summary>
@@ -55,11 +63,18 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOff(MessageEventArgs message)
         {
-            bool? result = Off?.Invoke(message);
-            if (result == null) return;
-            if (result == true) this.DeviceStatus = Models.DeviceStatus.Off;
+            try
+            {
+                bool? result = Off?.Invoke(message);
+                if (result == null) return;
+                if (result == true) this.DeviceStatus = Models.DeviceStatus.Off;
 
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, this.DeviceStatus.GetDescription());
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, this.DeviceStatus.GetDescription());
+            }
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
     }
 }

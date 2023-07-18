@@ -11,12 +11,17 @@
 		<Version>1.0.0</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<Title>BemfaCloud.Devices</Title>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\..\LICENSE">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 

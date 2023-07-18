@@ -6,12 +6,13 @@ using BemfaCloud.Models;
 
 namespace BemfaCloud.Devices
 {
-    public class BemfaAircon : BaseBemfaDevice
+    public class BemfaAircon : BaseDevice
     {
         public override DeviceType DeviceType => DeviceType.AirConditioning;
 
         public event Func<MessageEventArgs, AirconMode, double, bool> On;
         public event Func<MessageEventArgs, bool> Off;
+        public event Action<Exception> OnException;
 
         private AirconMode _lastAirconMode = AirconMode.Auto;
         private double _lastTemperature = 24.0;
@@ -73,15 +74,22 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOn(MessageEventArgs message, AirconMode airconMode, double temperature)
         {
-            bool? result = On?.Invoke(message, airconMode, temperature);
-            if (result == null) return;
-            if (result == true)
+            try
             {
-                _lastTemperature = temperature;
-                _lastAirconMode = airconMode;
-                this.DeviceStatus = DeviceStatus.On;
+                bool? result = On?.Invoke(message, airconMode, temperature);
+                if (result == null) return;
+                if (result == true)
+                {
+                    _lastTemperature = temperature;
+                    _lastAirconMode = airconMode;
+                    this.DeviceStatus = DeviceStatus.On;
+                }
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), ((int)_lastAirconMode).ToString(), _lastTemperature.ToString()));
             }
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), ((int)_lastAirconMode).ToString(), _lastTemperature.ToString()));
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
 
         /// <summary>
@@ -90,13 +98,20 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOff(MessageEventArgs message)
         {
-            bool? result = Off?.Invoke(message);
-            if (result == null) return;
-            if (result == true)
+            try
             {
-                this.DeviceStatus = DeviceStatus.Off;
+                bool? result = Off?.Invoke(message);
+                if (result == null) return;
+                if (result == true)
+                {
+                    this.DeviceStatus = DeviceStatus.Off;
+                }
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), ((int)_lastAirconMode).ToString(), _lastTemperature.ToString()));
             }
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), ((int)_lastAirconMode).ToString(), _lastTemperature.ToString()));
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
     }
 }

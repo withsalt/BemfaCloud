@@ -6,12 +6,13 @@ using BemfaCloud.Models;
 
 namespace BemfaCloud.Devices
 {
-    public class BemfaLight : BaseBemfaDevice
+    public class BemfaLight : BaseDevice
     {
         public override DeviceType DeviceType => DeviceType.Light;
 
         public event Func<MessageEventArgs, int, Color, bool> On;
         public event Func<MessageEventArgs, bool> Off;
+        public event Action<Exception> OnException;
 
         private int _lastBrightness = 100;
         private Color _lastColor = Color.White;
@@ -72,15 +73,22 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOn(MessageEventArgs message, int brightness, Color color)
         {
-            bool? result = On?.Invoke(message, brightness, color);
-            if (result == null) return;
-            if (result == true)
+            try
             {
-                _lastColor = color;
-                _lastBrightness = brightness;
-                this.DeviceStatus = DeviceStatus.On;
+                bool? result = On?.Invoke(message, brightness, color);
+                if (result == null) return;
+                if (result == true)
+                {
+                    _lastColor = color;
+                    _lastBrightness = brightness;
+                    this.DeviceStatus = DeviceStatus.On;
+                }
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastBrightness.ToString(), ConvertColorToInt32(_lastColor).ToString()));
             }
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastBrightness.ToString(), ConvertColorToInt32(_lastColor).ToString()));
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
 
         /// <summary>
@@ -89,13 +97,20 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOff(MessageEventArgs message)
         {
-            bool? result = Off?.Invoke(message);
-            if (result == null) return;
-            if (result == true)
+            try
             {
-                this.DeviceStatus = DeviceStatus.Off;
+                bool? result = Off?.Invoke(message);
+                if (result == null) return;
+                if (result == true)
+                {
+                    this.DeviceStatus = DeviceStatus.Off;
+                }
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastBrightness.ToString(), ConvertColorToInt32(_lastColor).ToString()));
             }
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastBrightness.ToString(), ConvertColorToInt32(_lastColor).ToString()));
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
 
         private Color ConvertInt32ToColor(int val)

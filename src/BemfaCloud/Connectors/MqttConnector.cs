@@ -281,7 +281,6 @@ namespace BemfaCloud.Connectors
                 OnError?.Invoke(new ErrorEventArgs(LogType.Warining, $"Message received failed. ReasonCode: {e.ReasonCode}, reason: {e.ResponseReasonString}"));
                 return Task.CompletedTask;
             }
-            Listener?.Invoke(new MessageEventArgs(CommandType.Publish, new DeviceInfo(e.ApplicationMessage.Topic), e.ApplicationMessage.PayloadSegment));
             OnMessage?.Invoke(new MessageEventArgs(CommandType.Publish, new DeviceInfo(e.ApplicationMessage.Topic), e.ApplicationMessage.PayloadSegment));
             return Task.CompletedTask;
         }

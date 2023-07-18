@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BemfaCloud.Devices.Models;
 using BemfaCloud.Models;
 
 namespace BemfaCloud.Devices
 {
-    public abstract class BaseBemfaDevice
+    public abstract class BaseDevice
     {
         public IBemfaConnector Connector { get; private set; }
 
@@ -20,9 +21,16 @@ namespace BemfaCloud.Devices
         /// </summary>
         public event Action<MessageEventArgs> OnMessage;
 
+        private readonly Dictionary<CommandType, int> _skipCommandType = new Dictionary<CommandType, int>()
+        {
+            { CommandType.Unknow, (int)CommandType.Unknow },
+            { CommandType.Ping, (int)CommandType.Ping },
+            { CommandType.GetTimestamp, (int)CommandType.GetTimestamp }
+        };
+
         protected abstract bool Resolver(MessageEventArgs message);
 
-        public BaseBemfaDevice(string topic, IBemfaConnector connector)
+        public BaseDevice(string topic, IBemfaConnector connector)
         {
             if (string.IsNullOrWhiteSpace(topic))
             {
@@ -50,6 +58,10 @@ namespace BemfaCloud.Devices
             }
             string cmdStr = message.ToString();
             if (string.IsNullOrWhiteSpace(cmdStr))
+            {
+                return;
+            }
+            if (_skipCommandType.ContainsKey(message.Type))
             {
                 return;
             }

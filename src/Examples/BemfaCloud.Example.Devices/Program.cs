@@ -22,7 +22,7 @@ namespace BemfaCloud.Example.Devices
                 })
                 .WithMessageHandler((e) =>
                 {
-                    if (e.CommandType == Models.CommandType.GetTimestamp)
+                    if (e.Type == Models.CommandType.GetTimestamp)
                     {
                         Console.WriteLine($"收到消息：" + e);
                     }
@@ -58,6 +58,11 @@ namespace BemfaCloud.Example.Devices
                 {
                     break;
                 }
+                //输入【updsen】更新传感器数据
+                else if (readStr.Equals("updsen", StringComparison.OrdinalIgnoreCase))
+                {
+                    UpdateSensorValue();
+                }
             }
 
             await connector.DisconnectAsync();
@@ -66,7 +71,7 @@ namespace BemfaCloud.Example.Devices
 
         static void Switch(IBemfaConnector connector)
         {
-            BemfaSwitch @switch = new BemfaSwitch("pcSoftOpenEmbyWebOverTcp006", connector);
+            BemfaSwitch @switch = new BemfaSwitch("testSwitch006", connector);
             @switch.On += (e) =>
             {
                 //执行开关打开动作
@@ -78,6 +83,10 @@ namespace BemfaCloud.Example.Devices
                 //执行开关关闭动作
                 Console.WriteLine("哦呦~需要关闭开关");
                 return true;
+            };
+            @switch.OnException += (e) =>
+            {
+                Console.WriteLine($"发生了异常：{e.Message}");
             };
             @switch.OnMessage += (e) =>
             {
@@ -100,6 +109,10 @@ namespace BemfaCloud.Example.Devices
                 Console.WriteLine("哦呦~需要关闭插座");
                 return true;
             };
+            socket.OnException += (e) =>
+            {
+                Console.WriteLine($"发生了异常：{e.Message}");
+            };
             socket.OnMessage += (e) =>
             {
                 Console.WriteLine($"收到无法解析的消息：{e.ToString()}");
@@ -120,6 +133,10 @@ namespace BemfaCloud.Example.Devices
                 //执行关灯动作
                 Console.WriteLine("哦呦~需要关闭灯");
                 return true;
+            };
+            light.OnException += (e) =>
+            {
+                Console.WriteLine($"发生了异常：{e.Message}");
             };
             light.OnMessage += (e) =>
             {
@@ -142,17 +159,40 @@ namespace BemfaCloud.Example.Devices
                 Console.WriteLine("哦呦~需要关闭风扇");
                 return true;
             };
+            fan.OnException += (e) =>
+            {
+                Console.WriteLine($"发生了异常：{e.Message}");
+            };
             fan.OnMessage += (e) =>
             {
                 Console.WriteLine($"收到无法解析的消息：{e.ToString()}");
             };
         }
 
+        private static BemfaSensor _sensor = null;
+
         static void Sensor(IBemfaConnector connector)
         {
-            BemfaSensor sensor = new BemfaSensor("testSensor004", connector);
-            sensor.WithTemperature(26)
-                .WithHumidity(56)
+            if (_sensor == null)
+            {
+                _sensor = new BemfaSensor("testSensor004", connector);
+                _sensor.OnException += (e) =>
+                {
+                    Console.WriteLine($"发生了异常：{e.Message}");
+                };
+            }
+        }
+
+        static void UpdateSensorValue()
+        {
+            if (_sensor == null)
+            {
+                throw new Exception("还未实例化传感器！");
+            }
+            _sensor.WithTemperature(new Random().Next(10, 30))
+                .WithHumidity(new Random().Next(30, 80))
+                .WithDeviceStatus(DeviceStatus.On)
+                .WithPM25(new Random().Next(30, 150))
                 .Update();
         }
 
@@ -170,6 +210,10 @@ namespace BemfaCloud.Example.Devices
                 //执行关闭空调动作
                 Console.WriteLine("哦呦~需要关闭空调");
                 return true;
+            };
+            aircon.OnException += (e) =>
+            {
+                Console.WriteLine($"发生了异常：{e.Message}");
             };
             aircon.OnMessage += (e) =>
             {
@@ -197,6 +241,10 @@ namespace BemfaCloud.Example.Devices
                 //执行暂停窗帘动作
                 Console.WriteLine("哦呦~需要暂停窗帘");
                 return true;
+            };
+            curtain.OnException += (e) =>
+            {
+                Console.WriteLine($"发生了异常：{e.Message}");
             };
             curtain.OnMessage += (e) =>
             {

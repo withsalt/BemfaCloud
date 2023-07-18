@@ -25,7 +25,7 @@ namespace BemfaCloud.Example.RaspberryPi
                 })
                 .WithMessageHandler((e) =>
                 {
-                    if (e.CommandType == Models.CommandType.GetTimestamp)
+                    if (e.Type == Models.CommandType.GetTimestamp)
                     {
                         Console.WriteLine($"收到消息：" + e);
                     }

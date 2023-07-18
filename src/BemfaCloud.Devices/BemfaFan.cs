@@ -6,12 +6,13 @@ using BemfaCloud.Models;
 
 namespace BemfaCloud.Devices
 {
-    public class BemfaFan : BaseBemfaDevice
+    public class BemfaFan : BaseDevice
     {
         public override DeviceType DeviceType => DeviceType.Fan;
 
         public event Func<MessageEventArgs, int, bool, bool> On;
         public event Func<MessageEventArgs, bool> Off;
+        public event Action<Exception> OnException;
 
         private int _lastLevel = 1;
         private bool _lastHeadStatus = false;
@@ -77,15 +78,22 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOn(MessageEventArgs message, int level, bool headStatus)
         {
-            bool? result = On?.Invoke(message, level, headStatus);
-            if (result == null) return;
-            if (result == true)
+            try
             {
-                _lastHeadStatus = headStatus;
-                _lastLevel = level;
-                this.DeviceStatus = DeviceStatus.On;
+                bool? result = On?.Invoke(message, level, headStatus);
+                if (result == null) return;
+                if (result == true)
+                {
+                    _lastHeadStatus = headStatus;
+                    _lastLevel = level;
+                    this.DeviceStatus = DeviceStatus.On;
+                }
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastLevel.ToString(), _lastHeadStatus ? "1" : "0"));
             }
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastLevel.ToString(), _lastHeadStatus ? "1" : "0"));
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
 
         /// <summary>
@@ -94,13 +102,20 @@ namespace BemfaCloud.Devices
         /// <param name="message"></param>
         private void DeviceOff(MessageEventArgs message)
         {
-            bool? result = Off?.Invoke(message);
-            if (result == null) return;
-            if (result == true)
+            try
             {
-                this.DeviceStatus = DeviceStatus.Off;
+                bool? result = Off?.Invoke(message);
+                if (result == null) return;
+                if (result == true)
+                {
+                    this.DeviceStatus = DeviceStatus.Off;
+                }
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastLevel.ToString(), _lastHeadStatus ? "1" : "0"));
             }
-            this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastLevel.ToString(), _lastHeadStatus ? "1" : "0"));
+            catch (Exception ex)
+            {
+                OnException?.Invoke(ex);
+            }
         }
     }
 }
