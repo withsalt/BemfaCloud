@@ -1,5 +1,5 @@
 # BemfaCloud
-巴法云 C#/.NET SDK。支持TCP和MQTT协议接入，并有简单实用的设备操作API。跨平台，支持Linux、Windows、OSX，支持树莓派。  
+巴法云 C#/.NET SDK。支持TCP和MQTT协议接入，并提供超级简单的设备操作API。跨平台，支持Linux、Windows、OSX，支持树莓派。  
 
 ## 特别感谢
 巴法云：https://cloud.bemfa.com/  
@@ -10,13 +10,13 @@ GodSharp.Socket: https://github.com/godsharp/GodSharp.Socket
 |  包名  |  版本 | 说明  |
 | ------------ | ------------ | ------------ |
 | BemfaCloud  | [![NuGet Version](https://img.shields.io/nuget/v/BemfaCloud.svg?style=flat)](https://www.nuget.org/packages/BemfaCloud/)  | 基础包，如果只是使用TCP或MQTT连接，只需使用这个库。   |
-| BemfaCloud.Devices  | [![NuGet Version](https://img.shields.io/nuget/v/BemfaCloud.Devices.svg?style=flat)](https://www.nuget.org/packages/BemfaCloud.Devices/)  | 高级设备操作API，提供简单易用的设备操作API。  |
+| BemfaCloud.Devices  | [![NuGet Version](https://img.shields.io/nuget/v/BemfaCloud.Devices.svg?style=flat)](https://www.nuget.org/packages/BemfaCloud.Devices/)  | 设备操作API，提供简单易用的设备操作API。  |
 
 
 ## 快速开始
 ### 新建主题
 登录到巴法云之后，点击新建主题。  
-![](https://docs.geeiot.net/server/index.php?s=/api/attachment/visitFile&sign=5be00ae3d98968bdb03414afda7dffaf)
+![](https://github.com/withsalt/BemfaCloud/blob/main/docs/images/001.png?raw=true)
 Tips：  
 巴发云通过**主题名称后三位**判断主题类型  
 - 001: 插座设备;  
@@ -39,7 +39,7 @@ dotnet add package BemfaCloud.Devices
 ```
 
 ### 使用一个开关设备
-控制一个开关关设备`testSwitchMqtt001`的完整示例。  
+控制一个开关关设备`testSwitchMqtt001`的`TCP`接入完整示例。  
 ```csharp
 using System;
 using System.Threading.Tasks;
@@ -58,7 +58,7 @@ namespace ConsoleApp7
             using IBemfaConnector connector = new BemfaConnectorBuilder()
                 .WithTcp()
                 .WithSecret("在此处填写你的私钥")
-                .WithTopics("testSwitchMqtt001")  //可订阅多个
+                .WithTopics("testSwitch001")  //可订阅多个
                 .WithErrorHandler((e) =>
                 {
                     Console.WriteLine($"[LOG][{DateTime.Now}] {e.Message}");
@@ -80,7 +80,7 @@ namespace ConsoleApp7
             }
 
             //使用开关设备
-            BemfaSwitch @switch = new BemfaSwitch("testSwitchMqtt001", connector);
+            BemfaSwitch @switch = new BemfaSwitch("testSwitch001", connector);
             @switch.On += (e) =>
             {
                 //执行开关打开动作
