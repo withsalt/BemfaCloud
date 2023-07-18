@@ -39,7 +39,10 @@ namespace BemfaCloud.Connectors.Builder
                 case ProtocolType.Tcp:
                 case ProtocolType.Tcp_V2:
                     {
-
+                        ProtocolType = ProtocolType.Tcp;
+                        Host = "bemfa.com";
+                        Port = 8344;
+                        IsEnableTls = true;
                     }
                     break;
                 case ProtocolType.Mqtt:
