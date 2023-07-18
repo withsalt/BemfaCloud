@@ -10,7 +10,7 @@ GodSharp.Socket: https://github.com/godsharp/GodSharp.Socket
 |  包名  |  版本 | 说明  |
 | ------------ | ------------ | ------------ |
 | BemfaCloud  | [![NuGet Version](https://img.shields.io/nuget/v/BemfaCloud.svg?style=flat)](https://www.nuget.org/packages/BemfaCloud/)  | 基础包，如果只是使用TCP或MQTT连接，只需使用这个库。   |
-| BemfaCloud.Devices  | [![NuGet Version](https://img.shields.io/nuget/v/BemfaCloud.Devices.svg?style=flat)](https://www.nuget.org/packages/BemfaCloud.Devices/)  | 高级设备操作API，提供简单易用的设备操作API。  |
+| BemfaCloud.Devices  | [![NuGet Version](https://img.shields.io/nuget/v/BemfaCloud.Devices.svg?style=flat)](https://www.nuget.org/packages/BemfaCloud.Devices/)  | 设备操作API，提供简单易用的设备操作API。  |
 
 
 ## 快速开始
