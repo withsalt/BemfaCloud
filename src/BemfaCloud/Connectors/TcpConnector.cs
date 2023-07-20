@@ -51,6 +51,14 @@ namespace BemfaCloud.Connectors
             }
         }
 
+        public override ProtocolType ProtocolType
+        {
+            get
+            {
+                return ProtocolType.Tcp;
+            }
+        }
+
         public TcpConnector(BaseConnectorBuilder builder) : base(builder)
         {
             OnMessage += this.Builder.OnMessageHandler;

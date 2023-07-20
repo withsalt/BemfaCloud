@@ -13,6 +13,7 @@ namespace BemfaCloud.Connectors.Builder
             ProtocolType = ProtocolType.Tcp;
             Host = "bemfa.com";
             Port = 8344;
+
             if (IsEnableTls)
             {
                 return WithTls();
@@ -25,6 +26,7 @@ namespace BemfaCloud.Connectors.Builder
             ProtocolType = ProtocolType.Mqtt;
             Host = "bemfa.com";
             Port = 9501;
+
             if (IsEnableTls)
             {
                 return WithTls();

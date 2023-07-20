@@ -8,6 +8,8 @@ namespace BemfaCloud
 {
     public interface IBemfaConnector : IDisposable
     {
+        ProtocolType ProtocolType { get; }
+
         /// <summary>
         /// 是否已经连接到服务器
         /// </summary>

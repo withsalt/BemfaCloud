@@ -35,6 +35,14 @@ namespace BemfaCloud.Connectors
             }
         }
 
+        public override ProtocolType ProtocolType
+        {
+            get
+            {
+                return ProtocolType.Mqtt;
+            }
+        }
+
         public MqttConnector(BaseConnectorBuilder builder) : base(builder)
         {
             MqttClientOptionsBuilder optionsBuilder = new MqttClientOptionsBuilder()

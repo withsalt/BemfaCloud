@@ -16,6 +16,8 @@ namespace BemfaCloud.Connectors.Base
 
         public abstract bool IsConnected { get; }
 
+        public abstract ProtocolType ProtocolType { get; }
+
         public BaseConnector(BaseConnectorBuilder builder)
         {
             Builder = builder;
