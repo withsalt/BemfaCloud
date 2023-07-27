@@ -10,12 +10,15 @@ namespace BemfaCloud.Devices
     {
         public override DeviceType DeviceType => DeviceType.AirConditioning;
 
-        public event Func<MessageEventArgs, AirconMode, double, bool> On;
+        public event Func<MessageEventArgs, AirconMode, double, int, bool?, bool?, bool> On;
         public event Func<MessageEventArgs, bool> Off;
         public event Action<Exception> OnException;
 
         private AirconMode _lastAirconMode = AirconMode.Auto;
         private double _lastTemperature = 24.0;
+        private int _lastLevel = 0;
+        private bool? _lastIsLeftAndRightSweeping = null;
+        private bool? _lastIsUpAndDownSweeping = null;
 
         public BemfaAircon(string topic, IBemfaConnector connector) : base(topic, connector)
         {
@@ -30,10 +33,15 @@ namespace BemfaCloud.Devices
             {
                 return false;
             }
-            string[] cmdArg = cmdStr.Split('#');
+
             DeviceStatus status = DeviceStatus.Unknown;
             AirconMode airconMode = _lastAirconMode;
             double temperatureVal = _lastTemperature;
+            int levelVal = _lastLevel;
+            bool? isLeftAndRightSweeping = _lastIsLeftAndRightSweeping;
+            bool? isUpAndDownSweeping = _lastIsUpAndDownSweeping;
+
+            string[] cmdArg = cmdStr.Split('#');
             for (int i = 0; i < cmdArg.Length; i++)
             {
                 switch (i)
@@ -55,11 +63,33 @@ namespace BemfaCloud.Devices
                         }
                         temperatureVal = Math.Round(temperatureVal, 1);
                         break;
+                    case 3:
+                        if (!int.TryParse(cmdArg[i], out levelVal))
+                        {
+                            return false;
+                        }
+                        break;
+                    case 4:
+                        if (cmdArg[i] == "1")
+                            isLeftAndRightSweeping = true;
+                        else if (cmdArg[i] == "0")
+                            isLeftAndRightSweeping = false;
+                        else
+                            isLeftAndRightSweeping = null;
+                        break;
+                    case 5:
+                        if (cmdArg[i] == "1")
+                            isUpAndDownSweeping = true;
+                        else if (cmdArg[i] == "0")
+                            isUpAndDownSweeping = false;
+                        else
+                            isUpAndDownSweeping = null;
+                        break;
                 }
             }
             if (status == DeviceStatus.On)
             {
-                DeviceOn(message, airconMode, temperatureVal);
+                DeviceOn(message, airconMode, temperatureVal, levelVal, isLeftAndRightSweeping, isUpAndDownSweeping);
             }
             else
             {
@@ -72,19 +102,45 @@ namespace BemfaCloud.Devices
         /// 设备动作：开
         /// </summary>
         /// <param name="message"></param>
-        private void DeviceOn(MessageEventArgs message, AirconMode airconMode, double temperature)
+        private void DeviceOn(MessageEventArgs message
+            , AirconMode airconMode
+            , double temperature
+            , int level
+            , bool? isLeftAndRightSweeping
+            , bool? isUpAndDownSweeping)
         {
             try
             {
-                bool? result = On?.Invoke(message, airconMode, temperature);
+                bool? result = On?.Invoke(message, airconMode, temperature, level, isLeftAndRightSweeping, isUpAndDownSweeping);
                 if (result == null) return;
                 if (result == true)
                 {
                     _lastTemperature = temperature;
                     _lastAirconMode = airconMode;
+                    _lastLevel = level;
+                    _lastIsLeftAndRightSweeping = isLeftAndRightSweeping;
+                    _lastIsUpAndDownSweeping = isUpAndDownSweeping;
                     this.DeviceStatus = DeviceStatus.On;
                 }
-                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), ((int)_lastAirconMode).ToString(), _lastTemperature.ToString()));
+
+                string cmdStr = null;
+                if (_lastIsLeftAndRightSweeping == null && _lastIsUpAndDownSweeping == null)
+                {
+                    cmdStr = CommandBuilder(this.DeviceStatus.GetDescription()
+                        , ((int)_lastAirconMode).ToString()
+                        , _lastTemperature.ToString()
+                        , _lastLevel.ToString());
+                }
+                else
+                {
+                    cmdStr = CommandBuilder(this.DeviceStatus.GetDescription()
+                        , ((int)_lastAirconMode).ToString()
+                        , _lastTemperature.ToString()
+                        , _lastLevel.ToString()
+                        , _lastIsLeftAndRightSweeping == null ? "" : (_lastIsLeftAndRightSweeping == true ? "1" : "0")
+                        , _lastIsUpAndDownSweeping == null ? "" : (_lastIsUpAndDownSweeping == true ? "1" : "0"));
+                }
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, cmdStr);
             }
             catch (Exception ex)
             {
@@ -106,7 +162,7 @@ namespace BemfaCloud.Devices
                 {
                     this.DeviceStatus = DeviceStatus.Off;
                 }
-                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), ((int)_lastAirconMode).ToString(), _lastTemperature.ToString()));
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), ((int)_lastAirconMode).ToString(), _lastTemperature.ToString(), _lastLevel.ToString()));
             }
             catch (Exception ex)
             {

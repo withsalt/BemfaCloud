@@ -30,10 +30,12 @@ namespace BemfaCloud.Devices
             {
                 return false;
             }
-            string[] cmdArg = cmdStr.Split('#');
+            
             DeviceStatus status = DeviceStatus.Unknown;
             int level = _lastLevel;
             bool headStatusVal = _lastHeadStatus;
+
+            string[] cmdArg = cmdStr.Split('#');
             for (int i = 0; i < cmdArg.Length; i++)
             {
                 switch (i)

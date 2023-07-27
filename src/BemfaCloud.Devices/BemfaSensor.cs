@@ -79,9 +79,11 @@ namespace BemfaCloud.Devices
             {
                 bool? result = On?.Invoke(message);
                 if (result == null) return;
-                if (result == true) this.DeviceStatus = DeviceStatus.On;
+                if (result == true) 
+                    this.DeviceStatus = DeviceStatus.On;
 
-                this.WithDeviceStatus(DeviceStatus.On).Update();
+                //传感器不返回电源【开】状态
+                //this.WithDeviceStatus(DeviceStatus.On).Update();
             }
             catch (Exception ex)
             {

@@ -30,9 +30,11 @@ namespace BemfaCloud.Devices
             {
                 return false;
             }
-            string[] cmdArg = cmdStr.Split('#');
+            
             DeviceStatus status = DeviceStatus.Unknown;
             int percentage = _lastPercentage;
+
+            string[] cmdArg = cmdStr.Split('#');
             for (int i = 0; i < cmdArg.Length; i++)
             {
                 switch (i)
@@ -104,7 +106,7 @@ namespace BemfaCloud.Devices
                     _lastPercentage = 0;
                     this.DeviceStatus = DeviceStatus.Off;
                 }
-                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription()));
+                this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastPercentage.ToString()));
             }
             catch (Exception ex)
             {
