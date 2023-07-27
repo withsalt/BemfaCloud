@@ -199,10 +199,10 @@ namespace BemfaCloud.Example.Devices
         static void Aircon(IBemfaConnector connector)
         {
             BemfaAircon aircon = new BemfaAircon("testAircon005", connector);
-            aircon.On += (MessageEventArgs e, AirconMode mode, double temp) =>
+            aircon.On += (MessageEventArgs e, AirconMode mode, double temp, int level, bool? isLeftAndRightSweeping, bool? isUpAndDownSweeping) =>
             {
                 //执行打开空调动作
-                Console.WriteLine($"哦呦~需要打空调，模式：{mode}，温度：{temp}");
+                Console.WriteLine($"哦呦~需要打空调，模式：{mode}，温度：{temp}， 风速：{(level == 0 ? "自动" : level)}，是否左右扫风：{isLeftAndRightSweeping}，是否上下扫风：{isUpAndDownSweeping}");
                 return true;
             };
             aircon.Off += (e) =>
