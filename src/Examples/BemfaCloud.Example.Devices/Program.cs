@@ -14,7 +14,7 @@ namespace BemfaCloud.Example.Devices
         {
             using IBemfaConnector connector = new BemfaConnectorBuilder()
                 .WithMqtt()
-                .WithSecret("569e65d2343544ebb9e3377426b3bf95")
+                .WithSecret("在此处填写你的私钥")
                 .WithTopics("testSocket001", "testLight002", "testFan003", "testSensor004", "testAircon005", "testSwitch006", "testCurtain009")
                 .WithErrorHandler((e) =>
                 {
