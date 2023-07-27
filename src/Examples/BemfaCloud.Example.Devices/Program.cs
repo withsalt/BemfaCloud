@@ -13,8 +13,8 @@ namespace BemfaCloud.Example.Devices
         static async Task Main(string[] args)
         {
             using IBemfaConnector connector = new BemfaConnectorBuilder()
-                .WithTcp()
-                .WithSecret("在此处填写你的私钥")
+                .WithMqtt()
+                .WithSecret("569e65d2343544ebb9e3377426b3bf95")
                 .WithTopics("testSocket001", "testLight002", "testFan003", "testSensor004", "testAircon005", "testSwitch006", "testCurtain009")
                 .WithErrorHandler((e) =>
                 {
@@ -230,10 +230,10 @@ namespace BemfaCloud.Example.Devices
                 Console.WriteLine($"哦呦~需要打窗帘，打开至：{percentage}");
                 return true;
             };
-            curtain.Off += (e, percentage) =>
+            curtain.Off += (e) =>
             {
                 //执行关闭窗帘动作
-                Console.WriteLine($"哦呦~需要关闭窗帘，关闭到：{percentage}");
+                Console.WriteLine($"哦呦~需要关闭窗帘");
                 return true;
             };
             curtain.Pause += (e) =>
