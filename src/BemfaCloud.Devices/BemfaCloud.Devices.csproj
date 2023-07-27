@@ -8,7 +8,7 @@
 		<Copyright>withsalt</Copyright>
 		<PackageProjectUrl>https://github.com/withsalt/BemfaCloud</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/withsalt/BemfaCloud</RepositoryUrl>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<Title>BemfaCloud.Devices</Title>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
