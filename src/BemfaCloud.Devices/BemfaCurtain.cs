@@ -10,7 +10,7 @@ namespace BemfaCloud.Devices
         public override DeviceType DeviceType => DeviceType.Curtain;
 
         public event Func<MessageEventArgs, int, bool> On;
-        public event Func<MessageEventArgs, bool> Off;
+        public event Func<MessageEventArgs, int, bool> Off;
         public event Func<MessageEventArgs, bool> Pause;
         public event Action<Exception> OnException;
 
@@ -64,7 +64,7 @@ namespace BemfaCloud.Devices
             if (status == DeviceStatus.On)
                 DeviceOn(message, percentage);
             else
-                DeviceOff(message);
+                DeviceOff(message, percentage);
             return true;
         }
 
@@ -95,15 +95,15 @@ namespace BemfaCloud.Devices
         /// 设备动作：关
         /// </summary>
         /// <param name="message"></param>
-        private void DeviceOff(MessageEventArgs message)
+        private void DeviceOff(MessageEventArgs message, int percentage)
         {
             try
             {
-                bool? result = Off?.Invoke(message);
+                bool? result = Off?.Invoke(message, percentage);
                 if (result == null) return;
                 if (result == true)
                 {
-                    _lastPercentage = 0;
+                    _lastPercentage = percentage;
                     this.DeviceStatus = DeviceStatus.Off;
                 }
                 this.Connector.UpdateAsync(message.DeviceInfo.Topic, CommandBuilder(this.DeviceStatus.GetDescription(), _lastPercentage.ToString()));

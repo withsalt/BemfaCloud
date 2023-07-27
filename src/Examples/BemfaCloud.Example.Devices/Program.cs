@@ -224,16 +224,16 @@ namespace BemfaCloud.Example.Devices
         static void Curtain(IBemfaConnector connector)
         {
             BemfaCurtain curtain = new BemfaCurtain("testCurtain009", connector);
-            curtain.On += (MessageEventArgs e, int percentage) =>
+            curtain.On += (e, percentage) =>
             {
                 //执行打开窗帘动作
                 Console.WriteLine($"哦呦~需要打窗帘，打开至：{percentage}");
                 return true;
             };
-            curtain.Off += (e) =>
+            curtain.Off += (e, percentage) =>
             {
                 //执行关闭窗帘动作
-                Console.WriteLine("哦呦~需要关闭窗帘");
+                Console.WriteLine($"哦呦~需要关闭窗帘，关闭到：{percentage}");
                 return true;
             };
             curtain.Pause += (e) =>
