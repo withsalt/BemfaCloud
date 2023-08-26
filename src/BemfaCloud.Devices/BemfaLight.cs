@@ -22,7 +22,7 @@ namespace BemfaCloud.Devices
 
         }
 
-        protected override bool Resolver(MessageEventArgs message)
+        protected override bool Excute(MessageEventArgs message)
         {
             string cmdStr = message.ToString();
             if (!cmdStr.StartsWith("on", StringComparison.OrdinalIgnoreCase)

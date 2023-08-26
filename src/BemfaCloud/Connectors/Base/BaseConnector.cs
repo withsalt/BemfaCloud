@@ -33,7 +33,7 @@ namespace BemfaCloud.Connectors.Base
 
         public abstract Task UpdateAsync(string deviceTopic, string payload);
 
-        public virtual void RegistListener(Action<MessageEventArgs> action)
+        public virtual void MessageEventRegister(Action<MessageEventArgs> action)
         {
             if (action != null) 
                 this.OnMessage += action;

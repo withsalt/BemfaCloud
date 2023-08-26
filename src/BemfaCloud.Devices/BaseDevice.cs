@@ -28,7 +28,7 @@ namespace BemfaCloud.Devices
             { CommandType.GetTimestamp, (int)CommandType.GetTimestamp }
         };
 
-        protected abstract bool Resolver(MessageEventArgs message);
+        protected abstract bool Excute(MessageEventArgs message);
 
         public BaseDevice(string topic, IBemfaConnector connector)
         {
@@ -38,7 +38,7 @@ namespace BemfaCloud.Devices
             }
             this.DeviceInfo = new DeviceInfo(topic);
             this.Connector = connector ?? throw new ArgumentNullException(nameof(connector));
-            this.Connector.RegistListener(Listener);
+            this.Connector.MessageEventRegister(MessageEventHandle);
         }
 
         protected virtual string CommandBuilder(params string[] cmds)
@@ -50,7 +50,7 @@ namespace BemfaCloud.Devices
             return string.Join("#", cmds);
         }
 
-        private void Listener(MessageEventArgs message)
+        private void MessageEventHandle(MessageEventArgs message)
         {
             if (message == null || message.Data.Array?.Any() != true)
             {
@@ -69,7 +69,7 @@ namespace BemfaCloud.Devices
             {
                 return;
             }
-            bool isSuccess = Resolver(message);
+            bool isSuccess = Excute(message);
             if (!isSuccess)
             {
                 OnMessage?.Invoke(message);

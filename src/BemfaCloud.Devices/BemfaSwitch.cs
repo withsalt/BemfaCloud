@@ -21,7 +21,7 @@ namespace BemfaCloud.Devices
         }
 
 
-        protected override bool Resolver(MessageEventArgs message)
+        protected override bool Excute(MessageEventArgs message)
         {
             switch (message.ToString().ToLower())
             {

@@ -50,9 +50,9 @@ namespace BemfaCloud
         Task UpdateAsync(string deviceTopic, string payload);
 
         /// <summary>
-        /// 注册监听器（可以自行注册消息监听）
+        /// 注册消息事件
         /// </summary>
         /// <param name="action"></param>
-        void RegistListener(Action<MessageEventArgs> action);
+        void MessageEventRegister(Action<MessageEventArgs> action);
     }
 }
