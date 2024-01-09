@@ -52,9 +52,9 @@ namespace BemfaCloud.Connectors
 
             if (builder.IsEnableTls)
             {
-                optionsBuilder.WithTls((o) =>
+                optionsBuilder.WithTlsOptions((o) =>
                 {
-                    o.AllowUntrustedCertificates = true;
+                    o.WithAllowUntrustedCertificates(true);
                 });
             }
             _clientOptions = optionsBuilder.Build();
