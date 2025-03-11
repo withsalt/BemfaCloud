@@ -263,7 +263,7 @@ namespace BemfaCloud.Connectors
                 else
                 {
                     OnError?.Invoke(new ErrorEventArgs(LogType.Error, $"Mqtt client disconnected. Try reconnect after {Builder.AutoReconnectDelaySeconds} seconds..."));
-                    await Task.Delay(Builder.AutoReconnectDelaySeconds, _cancellation.Token);
+                    await Task.Delay(Builder.AutoReconnectDelaySeconds * 1000, _cancellation.Token);
                 }
                 if (_isManualDisconnect || _isDispose || (_cancellation != null && _cancellation.IsCancellationRequested))
                 {

@@ -8,7 +8,7 @@
 		<Copyright>withsalt</Copyright>
 		<PackageProjectUrl>https://github.com/withsalt/BemfaCloud</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/withsalt/BemfaCloud</RepositoryUrl>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<Title>BemfaCloud.Devices</Title>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -27,6 +27,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="MQTTnet" Version="4.3.7.1207" />
+	  <PackageReference Include="System.Drawing.Common" Version="9.0.2" />
 	</ItemGroup>
 
   <ItemGroup>
